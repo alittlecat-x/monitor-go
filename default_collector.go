@@ -14,16 +14,43 @@ import (
 var DefaultCollector = NewDefaultCollector()
 
 type collectors struct {
-	HttpRequestDuration *prometheus.HistogramVec
+	HttpServerRequestsDurationSummary *prometheus.SummaryVec
+	HttpServerRequestsDurationHistogram *prometheus.HistogramVec
+	HttpServerRequestsRequestSizeHistogram *prometheus.HistogramVec
+	HttpServerRequestsResponseSizeHistogram *prometheus.HistogramVec
 }
 
 func NewDefaultCollector() *collectors {
 	collectors := collectors{
-		HttpRequestDuration: prometheus.NewHistogramVec(
+		HttpServerRequestsDurationSummary: prometheus.NewSummaryVec(
+			prometheus.SummaryOpts{
+				Name:    "http_server_requests_seconds_summary",
+				Help:    "A summary of request latencies for requests.",
+				Objectives: map[float64]float64{0.5:0.01, 0.75: 0.01, 0.9: 0.01, 0.95: 0.001, 0.99: 0.001},
+			},
+			[]string{"method", "path", "status"},
+		),
+		HttpServerRequestsDurationHistogram: prometheus.NewHistogramVec(
 			prometheus.HistogramOpts{
-				Name:    "http_request_duration",
-				Help:    "The HTTP request latencies in seconds",
-				Buckets: prometheus.DefBuckets,
+				Name:    "http_server_requests_seconds_histogram",
+				Help:    "A histogram of request size for requests.",
+				Buckets: []float64{10, 50, 100, 200, 500, 1000, 2000, 3000, 5000, 10000},
+			},
+			[]string{"method", "path", "status"},
+		),
+		HttpServerRequestsRequestSizeHistogram: prometheus.NewHistogramVec(
+			prometheus.HistogramOpts{
+				Name:    "http_server_requests_request_size_bytes",
+				Help:    "A histogram of request size for requests.",
+				Buckets: []float64{200, 500, 900, 1500, 3000, 10000},
+			},
+			[]string{"method", "path", "status"},
+		),
+		HttpServerRequestsResponseSizeHistogram: prometheus.NewHistogramVec(
+			prometheus.HistogramOpts{
+				Name:    "http_server_requests_response_size_bytes",
+				Help:    "A histogram of response size for requests.",
+				Buckets: []float64{200, 500, 900, 1500, 3000, 10000},
 			},
 			[]string{"method", "path", "status"},
 		),

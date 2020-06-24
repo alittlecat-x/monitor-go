@@ -7,6 +7,7 @@ package main
 
 import (
 	monitor_go "github.com/alittlecat-x/monitor-go"
+	"github.com/alittlecat-x/monitor-go/pushgateway"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

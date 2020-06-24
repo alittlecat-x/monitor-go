@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"net/http"
+	"time"
 )
 
 type myMonitor struct {
@@ -41,6 +42,7 @@ func main() {
 	router.Use(monitor_go.GinMiddleware())
 	router.GET("/hello", func(c *gin.Context) {
 		myMonitor.MyCounter.Inc()
+		time.Sleep(10*time.Second)
 		c.AbortWithStatus(http.StatusOK)
 	})
 	router.GET("/metrics", gin.WrapH(monitor_go.Handler()))
