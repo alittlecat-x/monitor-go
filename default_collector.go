@@ -34,7 +34,7 @@ func NewDefaultCollector() *collectors {
 			prometheus.HistogramOpts{
 				Name:    "http_server_requests_seconds_histogram",
 				Help:    "A histogram of request size for requests.",
-				Buckets: []float64{10, 50, 100, 200, 500, 1000, 2000, 3000, 5000, 10000},
+				Buckets: []float64{0.01, 0.05, 0.1, 0.2, 0.5, 1, 2, 3, 5, 10, 30},
 			},
 			[]string{"method", "path", "status"},
 		),
